@@ -1,0 +1,64 @@
+<div class="page-container">
+
+  <mat-card class="address-card">
+
+    <div class="header">
+      <h1>Electrol Roll 2002</h1>
+      <p>Search and open document addresses</p>
+    </div>
+
+    <mat-form-field appearance="outline" class="search-box">
+      <mat-label>Search address</mat-label>
+      <input
+        matInput
+        [(ngModel)]="filterText"
+        (input)="applyFilter()"
+        placeholder="Type filename or address..."
+      />
+    </mat-form-field>
+
+    <div class="table-container">
+
+      <table mat-table [dataSource]="filteredData" class="address-table">
+
+        <!-- File -->
+        <ng-container matColumnDef="filename">
+          <th mat-header-cell *matHeaderCellDef> File </th>
+          <td mat-cell *matCellDef="let row"> {{row.filename}} </td>
+        </ng-container>
+
+        <!-- Page -->
+        <ng-container matColumnDef="page">
+          <th mat-header-cell *matHeaderCellDef> Page </th>
+          <td mat-cell *matCellDef="let row"> {{row.page}} </td>
+        </ng-container>
+
+        <!-- Address -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let row"> {{row.address}} </td>
+        </ng-container>
+
+        <!-- Open -->
+        <ng-container matColumnDef="open">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="openFile(row)">
+              Open
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+
+    </div>
+
+  </mat-card>
+
+</div>

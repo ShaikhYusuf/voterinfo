@@ -1,0 +1,61 @@
+.page-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+  min-height: 100vh;
+}
+
+.address-card {
+  width: 100%;
+  max-width: 1000px;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.header p {
+  margin: 5px 0 15px 0;
+  color: #666;
+}
+
+.search-box {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.address-table {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.address-table th {
+  font-weight: 600;
+  background: #f4f6fb;
+}
+
+.address-table tr:hover {
+  background: #f7f9fc;
+  transition: 0.2s;
+}
+
+.address-table td,
+.address-table th {
+  padding: 14px 16px;
+}
+
+button {
+  border-radius: 6px;
+}
