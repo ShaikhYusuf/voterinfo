@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:ghpages": "ng build --configuration production --base-href ./ --output-path docs",
+    "build:ghpages": "ng build --configuration production --base-href /voterinfo/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
