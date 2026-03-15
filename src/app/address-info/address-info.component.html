@@ -4,7 +4,14 @@
 
     <div class="header">
       <h1>Electrol Roll 2002</h1>
-      <p>Search and open document addresses</p>
+      <p>
+        <strong>Important Notice</strong> <br/><br/>
+        For the original and official voter list, please refer to the Chief Electoral Officer, Maharashtra website:
+        <a href="https://ceoelection.maharashtra.gov.in/2002/2002rolldata.aspx" target="_blank">
+          https://ceoelection.maharashtra.gov.in/2002/2002rolldata.aspx
+        </a> <br/><br/>
+        Selected District => Mumbai City Assembly Constituency => Chinckpokli
+      </p>
     </div>
 
     <mat-form-field appearance="outline" class="search-box">
@@ -21,24 +28,24 @@
 
       <table mat-table [dataSource]="filteredData" class="address-table">
 
+        <!-- Page -->
+        <!-- <ng-container matColumnDef="page">
+          <th mat-header-cell *matHeaderCellDef> Page </th>
+          <td mat-cell *matCellDef="let row"> {{row.page}} </td>
+        </ng-container> -->
+
+        <!-- Address -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let row" style="white-space: pre-line;">  <span [innerHTML]="row.address"></span> </td>
+        </ng-container>
+
         <!-- File -->
         <ng-container matColumnDef="filename">
           <th mat-header-cell *matHeaderCellDef> File </th>
           <td mat-cell *matCellDef="let row"> {{row.filename}} </td>
         </ng-container>
-
-        <!-- Page -->
-        <ng-container matColumnDef="page">
-          <th mat-header-cell *matHeaderCellDef> Page </th>
-          <td mat-cell *matCellDef="let row"> {{row.page}} </td>
-        </ng-container>
-
-        <!-- Address -->
-        <ng-container matColumnDef="address">
-          <th mat-header-cell *matHeaderCellDef> Address </th>
-          <td mat-cell *matCellDef="let row"> {{row.address}} </td>
-        </ng-container>
-
+        
         <!-- Open -->
         <ng-container matColumnDef="open">
           <th mat-header-cell *matHeaderCellDef> </th>

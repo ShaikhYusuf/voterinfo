@@ -1,0 +1,76 @@
+<div class="container">
+
+  <mat-card class="disclaimer-card">
+
+    <mat-card-header>
+      <mat-card-title>Disclaimer</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <div class="content">
+
+        <p>
+          This platform provides voter information by downloading publicly available voter lists,
+          scanning them, and translating the content into English to make the information easier
+          to read and search.
+        </p>
+
+        <p>
+          While we make reasonable efforts to ensure accuracy, the information displayed here
+          is generated through automated and manual processing of original documents. Errors,
+          omissions, or translation inaccuracies may occur. The data provided here is for
+          reference purposes only and should not be treated as the official voter record.
+        </p>
+
+        <p>
+          Users are strongly advised to verify all details using the official voter list
+          published by the Election Authorities.
+        </p>
+
+        <p>
+          Official source:
+        </p>
+
+        <p>
+          <a mat-button color="primary"
+             href="https://ceoelection.maharashtra.gov.in/ceo/"
+             target="_blank">
+            CEO Maharashtra Website
+          </a>
+        </p>
+
+        <p>
+          <a mat-button color="primary"
+             href="https://ceoelection.maharashtra.gov.in/2002/2002rolldata.aspx"
+             target="_blank">
+            Original Voter List Data
+          </a>
+        </p>
+
+        <p>
+          This platform is not affiliated with or endorsed by any government authority.
+          By proceeding further, you acknowledge that the information provided may contain
+          inaccuracies and that you will verify important details from the official sources.
+        </p>
+
+      </div>
+
+      <mat-checkbox [(ngModel)]="accepted">
+        I have read and accept the disclaimer
+      </mat-checkbox>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!accepted"
+        (click)="proceed()">
+        Accept & Continue
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+
+</div>

@@ -24,7 +24,7 @@ import { MatCardModule } from '@angular/material/card';
   styleUrl: './address-info.component.css'
 })
 export class AddressInfoComponent implements OnInit {
-  displayedColumns: string[] = ['filename', 'page', 'address', 'open'];
+  displayedColumns: string[] = ['address', 'filename','open'];
   data: IAddressInfo[] = [];
   filteredData: IAddressInfo[] = [];
   filterText = '';
@@ -37,7 +37,7 @@ export class AddressInfoComponent implements OnInit {
 
   loadCSV() {
 
-  this.http.get('address-data.csv', { responseType: 'text' })
+  this.http.get('address-data.eng.csv', { responseType: 'text' })
     .subscribe(csv => {
 
       const rows = csv.split('\n').slice(1);
@@ -53,7 +53,7 @@ export class AddressInfoComponent implements OnInit {
           const item: IAddressInfo = {
             filename: cols[0].trim(),
             page: Number(cols[1]),
-            address: cols[3].trim()
+            address: cols[3].trim().replace(/\s([a-z])\)/gi, '<br>$1)')
           };
 
           // unique key based on filename + address
@@ -83,9 +83,9 @@ async transliterateToMarathi(text: string) {
   return text;
 }
   async applyFilter() {
-    const value = this.filterText.toLowerCase();
+    const mrINValue = this.filterText.toLowerCase();
     
-    const mrINValue = await this.transliterateToMarathi(value);
+    //const mrINValue = await this.transliterateToMarathi(value);
     console.log('Filtering with value: %s', mrINValue);
     this.filteredData = this.data.filter(item =>
       item.filename.toLowerCase().includes(mrINValue) ||
