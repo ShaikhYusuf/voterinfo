@@ -1,61 +1,277 @@
 .page-container {
   display: flex;
   justify-content: center;
-  padding: 40px;
-  background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+  padding: 60px 20px;
+  background: transparent; /* Uses global animated mesh gradient */
   min-height: 100vh;
 }
 
 .address-card {
   width: 100%;
-  max-width: 1000px;
-  padding: 25px;
-  border-radius: 12px;
+  max-width: 1050px;
+  padding: 40px;
+  border-radius: var(--apple-border-radius-lg);
+  box-shadow: none !important;
 }
 
 .header {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
 .header h1 {
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 38px;
+  letter-spacing: -0.8px;
+  color: var(--apple-text-primary);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
 .header p {
-  margin: 5px 0 15px 0;
-  color: #666;
+  margin: 12px auto 20px auto;
+  color: var(--apple-text-secondary);
+  line-height: 1.6;
+  max-width: 700px;
+  font-size: 15px;
+}
+
+.header a {
+  color: var(--apple-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.header a:hover {
+  color: var(--apple-accent-hover);
 }
 
 .search-box {
   width: 100%;
-  margin-bottom: 20px;
+  max-width: 700px;
+  margin: 0 auto 40px auto;
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+
+/* Apple Search Box overrides (Spotlight Style) */
+::ng-deep .apple-search-box .mat-mdc-text-field-wrapper {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 99px !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04), inset 0 2px 4px rgba(255,255,255,0.8);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+::ng-deep .apple-search-box.mat-focused .mat-mdc-text-field-wrapper {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 8px 30px rgba(0, 113, 227, 0.15), 0 0 0 3px rgba(0, 113, 227, 0.2), inset 0 2px 4px rgba(255,255,255,0.8) !important;
+  transform: scale(1.02);
+}
+
+::ng-deep .apple-search-box .mat-mdc-form-field-outline,
+::ng-deep .apple-search-box .mdc-notched-outline {
+  display: none !important; /* Hide material borders, rely on background */
+}
+
+::ng-deep .apple-search-box input {
+  font-size: 18px !important;
+  padding: 10px 0 !important;
+}
+::ng-deep .apple-search-box mat-label {
+  font-size: 16px !important;
+}
+
 
 .table-container {
   overflow-x: auto;
+  border-radius: var(--apple-border-radius-md);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
 
 .address-table {
   width: 100%;
-  border-radius: 8px;
+  background: transparent !important;
 }
 
 .address-table th {
   font-weight: 600;
-  background: #f4f6fb;
+  color: var(--apple-text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: rgba(245, 247, 250, 0.4) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-.address-table tr:hover {
-  background: #f7f9fc;
-  transition: 0.2s;
+.address-table tr.mat-mdc-row {
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.address-table tr.mat-mdc-row:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  transform: scale(1.005);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+  cursor: pointer;
+  border-radius: 12px;
+  z-index: 10;
+  position: relative;
 }
 
 .address-table td,
 .address-table th {
-  padding: 14px 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-button {
-  border-radius: 6px;
+/* Apple Button override for table */
+.apple-primary-btn {
+  border-radius: 99px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  background: linear-gradient(180deg, #0077ed 0%, #006ce0 100%) !important;
+  box-shadow: 0 2px 8px 0 rgba(0, 113, 227, 0.3), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  color: white !important;
+}
+
+.apple-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 113, 227, 0.4), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+}
+.apple-primary-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 113, 227, 0.3) !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 10px 5px; /* Minimal outer padding */
+    min-height: auto;
+  }
+  
+  .address-card {
+    padding: 20px 10px;
+    border-radius: var(--apple-border-radius-md);
+  }
+  
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+    letter-spacing: -0.5px;
+  }
+  
+  .header p {
+    font-size: 13px;
+    padding: 0 5px;
+    line-height: 1.5;
+  }
+  
+  .search-box {
+    margin-bottom: 20px;
+  }
+  
+  ::ng-deep .apple-search-box input {
+    font-size: 16px !important; /* Prevents iOS auto-zoom */
+  }
+
+  /* Deep Mobile Table Overrides - Convert to Stacked Cards */
+  .table-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Force table structure into blocks */
+  ::ng-deep .address-table, 
+  ::ng-deep .address-table tbody, 
+  ::ng-deep .address-table tr, 
+  ::ng-deep .address-table td {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Hide headers on mobile */
+  ::ng-deep .address-table thead {
+    display: none !important;
+  }
+  ::ng-deep .address-table tr.mat-mdc-header-row {
+     display: none !important;
+  }
+
+  /* Stacked Row (Card) Style */
+  ::ng-deep .address-table tr.mat-mdc-row {
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 15px !important;
+    border: 1px solid var(--apple-glass-border) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+    position: relative;
+    transition: transform 0.2s ease;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  ::ng-deep .address-table tr.mat-mdc-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important;
+  }
+
+  /* Cell specific styling for stacked layout */
+  ::ng-deep .address-table td.mat-mdc-cell {
+    padding: 0 !important;
+    border-bottom: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    margin-bottom: 10px;
+  }
+  
+  ::ng-deep .address-table td.mat-mdc-cell:last-child {
+    margin-bottom: 0;
+  }
+
+  /* 1st column: Address */
+  ::ng-deep .address-table td.mat-mdc-cell:nth-child(1) {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+    color: var(--apple-text-primary) !important;
+  }
+  
+  /* 2nd column: File */
+  ::ng-deep .address-table td.mat-mdc-cell:nth-child(2) {
+    font-size: 13px !important;
+    color: var(--apple-text-secondary) !important;
+    margin-top: 5px;
+    margin-bottom: 15px;
+  }
+
+  /* 3rd column: Action Button */
+  ::ng-deep .address-table td.mat-mdc-cell:nth-child(3) {
+    width: 100% !important;
+  }
+  
+  ::ng-deep .address-table td.mat-mdc-cell:nth-child(3) .apple-primary-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px !important;
+  }
 }

@@ -1,4 +1,70 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+:root {
+  --apple-bg: #f2f2f7;
+  --apple-glass-bg: rgba(255, 255, 255, 0.65);
+  --apple-glass-border: rgba(255, 255, 255, 0.8);
+  /* Layered soft shadows for depth */
+  --apple-glass-shadow: 
+    0 4px 24px -4px rgba(0, 0, 0, 0.04), 
+    0 16px 48px -12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  --apple-text-primary: #1d1d1f;
+  --apple-text-secondary: #86868b;
+  --apple-accent: #0071e3;
+  --apple-accent-hover: #0077ed;
+  --apple-border-radius-lg: 24px;
+  --apple-border-radius-md: 16px;
+  --apple-border-radius-sm: 10px;
+}
+
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0;
+}
+
+body { 
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--apple-text-primary);
+  /* Animated, rich mesh gradient */
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(200, 215, 255, 0.8), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(240, 210, 255, 0.6), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(190, 235, 255, 0.7), transparent 60%);
+  background-color: #f6f8fb;
+  background-size: 200% 200%;
+  animation: gradientFlow 15s ease infinite;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Glass Utility */
+.glass-panel {
+  background: var(--apple-glass-bg) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--apple-glass-border);
+  box-shadow: var(--apple-glass-shadow) !important;
+  border-radius: var(--apple-border-radius-lg) !important;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.glass-panel:hover {
+  box-shadow: 
+    0 8px 32px -4px rgba(0, 0, 0, 0.06), 
+    0 24px 64px -12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Override Material base typography slightly for Apple feel */
+.mat-typography {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
