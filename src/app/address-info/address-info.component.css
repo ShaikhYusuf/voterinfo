@@ -84,6 +84,27 @@
   font-size: 16px !important;
 }
 
+::ng-deep .apple-search-box .mat-mdc-form-field-icon-prefix {
+  padding-left: 10px;
+  padding-right: 5px;
+  color: var(--apple-text-secondary);
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+::ng-deep .apple-search-box.mat-focused .mat-mdc-form-field-icon-prefix {
+  color: var(--apple-accent);
+  transform: scale(1.15);
+}
+
+::ng-deep .apple-search-box .mat-mdc-form-field-hint {
+  color: var(--apple-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 6px;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+}
+
 
 .table-container {
   overflow-x: auto;

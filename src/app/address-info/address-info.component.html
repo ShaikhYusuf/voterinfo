@@ -15,6 +15,7 @@
     </div>
 
     <mat-form-field appearance="outline" class="search-box apple-search-box">
+      <mat-icon matPrefix>search</mat-icon>
       <mat-label>Search address</mat-label>
       <input
         matInput
@@ -22,6 +23,7 @@
         (input)="applyFilter()"
         placeholder="Type filename or address..."
       />
+      <mat-hint>Try searching for a street or building block like "Keshavrao"</mat-hint>
     </mat-form-field>
 
     <div class="table-container">
