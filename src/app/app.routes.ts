@@ -5,12 +5,7 @@ import { disclaimerGuard } from './disclaimer/disclaimer.guard';
 
 export const routes: Routes = [
   {
-    path: 'home/:folder',
-    component: AddressInfoComponent,
-    canActivate: [disclaimerGuard]
-  },
-  {
-    path: 'home',
+    path: ':folder',
     component: AddressInfoComponent,
     canActivate: [disclaimerGuard]
   },

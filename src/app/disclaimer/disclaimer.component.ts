@@ -20,7 +20,7 @@ import { DisclaimerService } from './disclaimer.service';
 })
 export class DisclaimerComponent implements OnInit {
   accepted = false;
-  private redirectTo = '/home';
+  private redirectTo = '/';
 
   constructor(
     private router: Router,

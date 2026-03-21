@@ -80,7 +80,7 @@ export class AddressInfoComponent implements OnInit {
     // If no folder is provided, fall back to the original flat file
     const csvPath = this.folderName
       ? `${this.folderName}/${this.folderName}.mar.csv`
-      : 'address-data.eng.csv';
+      : 'bhiwandi/bhiwandi.mar.csv';
 
     this.http.get(csvPath, { responseType: 'text' })
       .subscribe(csv => {
