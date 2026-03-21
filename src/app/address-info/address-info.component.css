@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   padding: 60px 20px;
-  background: transparent; /* Uses global animated mesh gradient */
+  background: transparent;
   min-height: 100vh;
 }
 
@@ -73,7 +73,7 @@
 
 ::ng-deep .apple-search-box .mat-mdc-form-field-outline,
 ::ng-deep .apple-search-box .mdc-notched-outline {
-  display: none !important; /* Hide material borders, rely on background */
+  display: none !important;
 }
 
 ::ng-deep .apple-search-box input {
@@ -104,7 +104,6 @@
   margin-top: 6px;
   text-shadow: 0 1px 2px rgba(255,255,255,0.8);
 }
-
 
 .table-container {
   overflow-x: auto;
@@ -151,6 +150,21 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
+/* Address cell takes all remaining width */
+.address-cell {
+  width: 100%;
+  white-space: pre-line;
+  line-height: 1.6;
+  color: var(--apple-text-primary);
+}
+
+/* Action cell is compact, fixed to content width */
+.action-cell {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
 /* Apple Button override for table */
 .apple-primary-btn {
   border-radius: 99px !important;
@@ -174,39 +188,39 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .page-container {
-    padding: 10px 5px; /* Minimal outer padding */
+    padding: 10px 5px;
     min-height: auto;
   }
-  
+
   .address-card {
     padding: 20px 10px;
     border-radius: var(--apple-border-radius-md);
   }
-  
+
   .header {
     margin-bottom: 20px;
   }
-  
+
   .header h1 {
     font-size: 24px;
     letter-spacing: -0.5px;
   }
-  
+
   .header p {
     font-size: 13px;
     padding: 0 5px;
     line-height: 1.5;
   }
-  
+
   .search-box {
     margin-bottom: 20px;
   }
-  
+
   ::ng-deep .apple-search-box input {
-    font-size: 16px !important; /* Prevents iOS auto-zoom */
+    font-size: 16px !important;
   }
 
-  /* Deep Mobile Table Overrides - Convert to Stacked Cards */
+  /* Convert table to stacked cards on mobile */
   .table-container {
     background: transparent;
     border: none;
@@ -215,25 +229,20 @@
     -webkit-backdrop-filter: none;
   }
 
-  /* Force table structure into blocks */
-  ::ng-deep .address-table, 
-  ::ng-deep .address-table tbody, 
-  ::ng-deep .address-table tr, 
+  ::ng-deep .address-table,
+  ::ng-deep .address-table tbody,
+  ::ng-deep .address-table tr,
   ::ng-deep .address-table td {
     display: block !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
 
-  /* Hide headers on mobile */
-  ::ng-deep .address-table thead {
+  ::ng-deep .address-table thead,
+  ::ng-deep .address-table tr.mat-mdc-header-row {
     display: none !important;
   }
-  ::ng-deep .address-table tr.mat-mdc-header-row {
-     display: none !important;
-  }
 
-  /* Stacked Row (Card) Style */
   ::ng-deep .address-table tr.mat-mdc-row {
     background: rgba(255, 255, 255, 0.6) !important;
     backdrop-filter: blur(10px);
@@ -253,7 +262,6 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important;
   }
 
-  /* Cell specific styling for stacked layout */
   ::ng-deep .address-table td.mat-mdc-cell {
     padding: 0 !important;
     border-bottom: none !important;
@@ -262,32 +270,26 @@
     align-items: flex-start !important;
     margin-bottom: 10px;
   }
-  
+
   ::ng-deep .address-table td.mat-mdc-cell:last-child {
     margin-bottom: 0;
   }
 
-  /* 1st column: Address */
+  /* Address column: full content */
   ::ng-deep .address-table td.mat-mdc-cell:nth-child(1) {
     font-size: 15px !important;
     line-height: 1.6 !important;
     color: var(--apple-text-primary) !important;
-  }
-  
-  /* 2nd column: File */
-  ::ng-deep .address-table td.mat-mdc-cell:nth-child(2) {
-    font-size: 13px !important;
-    color: var(--apple-text-secondary) !important;
-    margin-top: 5px;
     margin-bottom: 15px;
-  }
-
-  /* 3rd column: Action Button */
-  ::ng-deep .address-table td.mat-mdc-cell:nth-child(3) {
     width: 100% !important;
   }
-  
-  ::ng-deep .address-table td.mat-mdc-cell:nth-child(3) .apple-primary-btn {
+
+  /* Action column: full-width button */
+  ::ng-deep .address-table td.mat-mdc-cell:nth-child(2) {
+    width: 100% !important;
+  }
+
+  ::ng-deep .address-table td.mat-mdc-cell:nth-child(2) .apple-primary-btn {
     width: 100% !important;
     min-height: 48px !important;
     display: flex;

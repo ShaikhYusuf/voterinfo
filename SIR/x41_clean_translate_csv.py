@@ -62,9 +62,29 @@ def clean_content(text):
 
 df['Content_Marathi_Clean'] = df['Content_Marathi'].apply(clean_content)
 
-# ── Translate via local Ollama mistral-3:3b ───────────────────
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "ministral-3:3b"
+# ── Ollama config ─────────────────────────────────────────────
+OLLAMA_URL  = "http://localhost:11434/api/generate"
+MODEL       = "ministral-3:3b-instruct-2512-q4_K_M"
+BATCH_SIZE  = 5          # keep small — 3b model has a limited context window
+TIMEOUT     = 180        # seconds per request (increase if your machine is slow)
+
+def check_ollama():
+    """Verify Ollama is running and the model is available before starting."""
+    try:
+        r = requests.get("http://localhost:11434/api/tags", timeout=5)
+        r.raise_for_status()
+        models = [m['name'] for m in r.json().get('models', [])]
+        if not any(MODEL in m for m in models):
+            print(f"⚠️  Model '{MODEL}' not found in Ollama.")
+            print(f"   Run:  ollama pull {MODEL}")
+            print(f"   Available models: {models}")
+            return False
+        print(f"✅ Ollama is running. Model '{MODEL}' is ready.")
+        return True
+    except requests.exceptions.ConnectionError:
+        print("❌ Cannot connect to Ollama at http://localhost:11434")
+        print("   Make sure Ollama is running:  ollama serve")
+        return False
 
 def translate_batch(texts, retries=3):
     numbered = "\n".join([f"{i+1}. {t}" for i, t in enumerate(texts)])
@@ -91,42 +111,70 @@ Rules:
                     "stream": False,
                     "options": {
                         "temperature": 0.1,
-                        "num_predict": 4000
+                        "num_predict": 4000,
+                        "num_ctx": 8192,       # explicit context window for the q4 model
                     }
                 },
-                timeout=120
+                timeout=TIMEOUT
             )
             resp.raise_for_status()
             raw = resp.json().get("response", "").strip()
-            raw = re.sub(r'^```json\s*|```$', '', raw, flags=re.MULTILINE).strip()
-            # Extract JSON array if buried in text
-            match = re.search(r'\[.*\]', raw, re.DOTALL)
+
+            # Strip markdown fences if the model wrapped output in ```json ... ```
+            raw = re.sub(r'^```json\s*|^```\s*|```$', '', raw, flags=re.MULTILINE).strip()
+
+            # Extract the JSON array even if buried in surrounding text
+            match = re.search(r'\[.*?\]', raw, re.DOTALL)
             if match:
                 raw = match.group(0)
+
             translations = json.loads(raw)
+
             if isinstance(translations, list) and len(translations) == len(texts):
                 return translations
-            print(f"  Warning: got {len(translations)} translations for {len(texts)} inputs, retrying...")
-        except Exception as e:
-            print(f"  Attempt {attempt+1} failed: {e}")
-            time.sleep(2)
-    return ["[Translation Error]"] * len(texts)
 
-BATCH_SIZE = 5
+            print(f"\n  ⚠️  Got {len(translations)} items for {len(texts)} inputs — retrying...")
+
+        except requests.exceptions.Timeout:
+            print(f"\n  ⏱️  Timeout on attempt {attempt+1}/{retries} — model may be slow, retrying...")
+            time.sleep(5)
+        except json.JSONDecodeError as e:
+            print(f"\n  ❌ JSON parse error on attempt {attempt+1}: {e}")
+            print(f"     Raw output was: {raw[:300]!r}")
+            time.sleep(2)
+        except Exception as e:
+            print(f"\n  ❌ Attempt {attempt+1} failed: {e}")
+            time.sleep(2)
+
+    # Fall back: return each row individually translated (slower but safer)
+    print(f"\n  🔁 Falling back to single-row translation for this batch...")
+    results = []
+    for text in texts:
+        single = translate_batch([text], retries=2)
+        results.extend(single)
+    return results
+
+# ── Main ──────────────────────────────────────────────────────
+if not check_ollama():
+    raise SystemExit(1)
+
 all_translations = []
 rows = df['Content_Marathi_Clean'].tolist()
+total_batches = (len(rows) - 1) // BATCH_SIZE + 1
 
-print(f"Translating {len(rows)} rows via Ollama ({MODEL}) in batches of {BATCH_SIZE}...")
+print(f"\nTranslating {len(rows)} rows via Ollama ({MODEL}), batch size {BATCH_SIZE} ...\n")
 
 for i in range(0, len(rows), BATCH_SIZE):
     batch = rows[i:i+BATCH_SIZE]
-    print(f"  Batch {i//BATCH_SIZE + 1}/{(len(rows)-1)//BATCH_SIZE + 1} ...", end=' ', flush=True)
+    batch_num = i // BATCH_SIZE + 1
+    print(f"  Batch {batch_num:>4}/{total_batches} ...", end=' ', flush=True)
     translations = translate_batch(batch)
     all_translations.extend(translations)
-    print("done")
+    print("✓")
 
 df['Content_English'] = all_translations
 
+# ── Save output ───────────────────────────────────────────────
 final = df[['Filename', 'Page_No', 'Yadi_Bhag_No', 'Content_English']].copy()
 final.columns = [
     'Filename',
@@ -142,6 +190,6 @@ for col in final.columns:
 out_path = 'nagpada/nagpada.eng.csv'
 final.to_csv(out_path, index=False, encoding='utf-8-sig')
 
-print(f"\nSaved to: {out_path}")
-print(f"Total rows: {len(final)}")
+print(f"\n✅ Saved to: {out_path}")
+print(f"   Total rows: {len(final)}")
 print(final.head(3).to_string())
