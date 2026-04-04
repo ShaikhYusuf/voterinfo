@@ -1,7 +1,7 @@
 import re, sys, os, csv, argparse, time
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
+from x0_settings import BASE_FOLDER
 try:
     from pdf2image import convert_from_path
     import pytesseract
@@ -288,7 +288,7 @@ def main():
 
     ap = argparse.ArgumentParser(description="Extract cell text from voter list PDFs")
     ap.add_argument("pdfs",         nargs="*",           help="PDF file(s)")
-    ap.add_argument("--folder",     default=None,        help="Folder of PDFs")
+    ap.add_argument("--folder",     default=BASE_FOLDER, help="Folder of PDFs")
     ap.add_argument("--lang",       default="mar+eng",   help="Tesseract language (default: mar+eng)")
     ap.add_argument("--out",        default="yadi_output.csv", help="Output CSV")
     ap.add_argument("--poppler",    default=None,        help="[Win] Poppler bin path")

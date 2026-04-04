@@ -1,9 +1,10 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+from x0_settings import BASE_FOLDER
 
 # base folder
-base_folder = 'bhiwandi'
+base_folder = BASE_FOLDER
 if not os.path.exists(base_folder):
     os.makedirs(base_folder)
     

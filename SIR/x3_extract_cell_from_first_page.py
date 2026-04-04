@@ -21,6 +21,7 @@ USAGE:
 
 import re, sys, os, csv, argparse
 from pathlib import Path
+from x0_settings import BASE_FOLDER
 
 try:
     from pdf2image import convert_from_path
@@ -176,9 +177,9 @@ def main():
         description="Extract yadi bhagachya haddichya tapsil from voter list PDFs"
     )
     parser.add_argument("pdfs",        nargs="*",           help="PDF file(s)")
-    parser.add_argument("--folder",    default=None,        help="Folder of PDFs")
+    parser.add_argument("--folder",    default=BASE_FOLDER, help="Folder of PDFs")
     parser.add_argument("--lang",      default="mar+eng",   help="OCR language (default: mar+eng)")
-    parser.add_argument("--out",       default="yadi_cell_index.csv", help="Output CSV")
+    parser.add_argument("--out",       default=f"{BASE_FOLDER}/{BASE_FOLDER}.mar.csv", help="Output CSV")
     parser.add_argument("--poppler",   default=None,        help="[Win] Poppler bin path")
     parser.add_argument("--tesseract", default=None,        help="[Win] tesseract.exe path")
     args = parser.parse_args()
