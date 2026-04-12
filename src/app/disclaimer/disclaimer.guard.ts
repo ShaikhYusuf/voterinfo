@@ -10,8 +10,11 @@ export const disclaimerGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Store the intended route in the service
-  disclaimerService.redirectUrl = route.params['folder'] ?? '';
-
-  return router.createUrlTree(['/']);  // go to disclaimer
+  // state.url will be '/mazgaon' — extract folder from it
+  const folder = state.url.replace(/^\//, '').split('?')[0].split('#')[0];
+  console.log('Saving folder:', folder);
+  
+  disclaimerService.redirectUrl = folder;
+  
+  return router.createUrlTree(['/']);
 };

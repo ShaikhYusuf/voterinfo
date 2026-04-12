@@ -4,16 +4,24 @@ import urllib3
 from urllib.parse import quote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from links_pdfs import pdf_links
+from x0_settings import BASE_FOLDER
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-BASE_URL = "https://ceoelection.maharashtra.gov.in"
+# BASE_URL = "https://ceoelection.maharashtra.gov.in"
+BASE_URL = "https://electiondata.mcgm.gov.in"
+
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+
+
+# base folder
+base_folder = BASE_FOLDER
 
 def download_pdf(url, base_folder):
     try:
-        path = url.replace(BASE_URL, "")
-        encoded_url = BASE_URL + quote(path)
+        # path = url.replace(BASE_URL, "")
+        # encoded_url = BASE_URL + quote(path)
+        encoded_url = url
         filename = os.path.join(base_folder, url.split('/')[-1].replace(" ", "_").replace(",", ""))
 
         print(f"Downloading: {encoded_url}")
@@ -28,7 +36,6 @@ def download_pdf(url, base_folder):
         print(f"Failed: {e}")
 
 if __name__ == "__main__":
-    base_folder = 'trombay'
     os.makedirs(base_folder, exist_ok=True)
 
     max_workers = 10

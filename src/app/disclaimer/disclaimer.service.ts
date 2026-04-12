@@ -10,11 +10,13 @@ export class DisclaimerService {
   redirectUrl: string = '';         // <-- add this
 
   isAccepted(): boolean {
-    return this._accepted || sessionStorage.getItem('disclaimer') === 'accepted';
+    //return this._accepted || sessionStorage.getItem('disclaimer') === 'accepted';
+    return this._accepted || localStorage.getItem('disclaimer') === 'accepted';
   }
 
   accept(): void {
     this._accepted = true;
-    sessionStorage.setItem('disclaimer', 'accepted');
+    //sessionStorage.setItem('disclaimer', 'accepted');
+    localStorage.setItem('disclaimer', 'accepted');
   }
 }

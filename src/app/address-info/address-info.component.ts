@@ -51,9 +51,9 @@ export class AddressInfoComponent implements OnInit {
     // Read folder param from route; fall back to empty string if not provided
     this.route.paramMap.subscribe(params => {
       this.folderName = params.get('folder') ?? '';
-      if (this.folderName.startsWith('list_')) {
-        this.title = "2026";
-      }
+    
+    // Always reset first, then conditionally change
+      this.title = this.folderName.startsWith('list_') ? '2026' : '2002';
       this.loadCSV();
     });
   }
