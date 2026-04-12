@@ -42,6 +42,11 @@ export class AddressInfoComponent implements OnInit {
 
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
 
+  private getBase(): string {
+    const base = document.querySelector('base')?.getAttribute('href') ?? '/';
+    return base.endsWith('/') ? base : base + '/';
+}
+
   ngOnInit() {
     // Read folder param from route; fall back to empty string if not provided
     this.route.paramMap.subscribe(params => {
@@ -82,11 +87,14 @@ export class AddressInfoComponent implements OnInit {
   }
 
   loadCSV() {
+    const base = this.getBase();
+    console.log('Base URI:', base);
+
     // CSV file is located at: <folderName>/<folderName>.mar.csv
     // If no folder is provided, fall back to the original flat file
     const csvPath = this.folderName
-      ? `${this.folderName}/${this.folderName}.mar.csv`
-      : 'bhiwandi/bhiwandi.mar.csv';
+      ? `${base}data/${this.folderName}/${this.folderName}.mar.csv`
+      : `${base}data/bhiwandi/bhiwandi.mar.csv`;
 
     this.http.get(csvPath, { responseType: 'text' })
       .subscribe(csv => {
@@ -182,12 +190,14 @@ export class AddressInfoComponent implements OnInit {
   }
 
   openFile(item: IAddressInfo) {
+    let base = this.getBase();
     // File is located inside the folder: <folderName>/<filename>
-    let url = `${this.folderName}/${item.filename}`;
-    if (item.page && item.page > 0) {
-      url = `${this.folderName}/${item.filename}#page=${item.page}`;
+    let url = `${base}data/${this.folderName}/${item.filename}`;
 
-      window.open(url, '_blank');
+    if (item.page && item.page > 0) {
+      url = `${base}data/${this.folderName}/${item.filename}#page=${item.page}`;
     }
+
+    window.open(url, '_blank');
   }
 }

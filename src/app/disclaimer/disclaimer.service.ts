@@ -6,12 +6,15 @@ const ACCEPTED_KEY = 'disclaimerAccepted';
   providedIn: 'root'
 })
 export class DisclaimerService {
+  private _accepted = false;
+  redirectUrl: string = '';         // <-- add this
 
   isAccepted(): boolean {
-    return sessionStorage.getItem(ACCEPTED_KEY) === 'true';
+    return this._accepted || sessionStorage.getItem('disclaimer') === 'accepted';
   }
 
   accept(): void {
-    sessionStorage.setItem(ACCEPTED_KEY, 'true');
+    this._accepted = true;
+    sessionStorage.setItem('disclaimer', 'accepted');
   }
 }

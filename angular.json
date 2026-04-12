@@ -13,10 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": {
-              "base": "docs",
-              "browser": "browser"
-            },
+            "outputPath": "docs/voterinfo",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [

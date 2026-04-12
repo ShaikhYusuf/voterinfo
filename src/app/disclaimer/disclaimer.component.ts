@@ -20,27 +20,24 @@ import { DisclaimerService } from './disclaimer.service';
 })
 export class DisclaimerComponent implements OnInit {
   accepted = false;
-  private redirectTo = '/';
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private disclaimerService: DisclaimerService
   ) {}
 
-  ngOnInit(): void {
-    // Read the intended URL directly from the query param set by the guard
-    this.activatedRoute.queryParams.subscribe(params => {
-      if (params['redirectTo']) {
-        this.redirectTo = params['redirectTo'];
-      }
-    });
-  }
+  ngOnInit(): void {}   // nothing needed here anymore
 
   proceed(): void {
     if (this.accepted) {
       this.disclaimerService.accept();
-      this.router.navigateByUrl(this.redirectTo, { replaceUrl: true });
+
+      const target = this.disclaimerService.redirectUrl;
+      if (target) {
+        this.router.navigate([target], { replaceUrl: true });
+      } else {
+        this.router.navigate(['/'], { replaceUrl: true });
+      }
     }
   }
 }
