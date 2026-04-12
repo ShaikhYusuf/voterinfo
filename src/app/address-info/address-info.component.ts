@@ -11,7 +11,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
-import Papa from 'papaparse';
 
 @Component({
   selector: 'app-address-info',
@@ -30,19 +29,26 @@ import Papa from 'papaparse';
   styleUrl: './address-info.component.css'
 })
 export class AddressInfoComponent implements OnInit {
+  title = "2002"
   displayedColumns: string[] = ['address', 'open'];  // filename column removed
   data: IAddressInfo[] = [];
- 
+  col_filename = 0;
+  col_content = 1;
+  col_page = -1; // optional page column index
+
   filteredData: IAddressInfo[] = [];
   filterText = '';
   folderName = '';
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute) { }
 
   ngOnInit() {
     // Read folder param from route; fall back to empty string if not provided
     this.route.paramMap.subscribe(params => {
       this.folderName = params.get('folder') ?? '';
+      if (this.folderName.startsWith('list_')) {
+        this.title = "2026";
+      }
       this.loadCSV();
     });
   }
@@ -73,7 +79,7 @@ export class AddressInfoComponent implements OnInit {
 
     result.push(current.trim());
     return result.map(col => col.replace(/^"|"$/g, '').trim());
-}
+  }
 
   loadCSV() {
     // CSV file is located at: <folderName>/<folderName>.mar.csv
@@ -84,6 +90,19 @@ export class AddressInfoComponent implements OnInit {
 
     this.http.get(csvPath, { responseType: 'text' })
       .subscribe(csv => {
+        const lines = csv.split('\n');
+        const headerRow = lines[0];
+        const headerCols = this.splitCSV(headerRow);
+
+        // Determine column indices from header
+        this.col_filename = headerCols.findIndex(col => col.toLowerCase() === 'filename');
+        this.col_content = headerCols.findIndex(col => col.toLowerCase() === 'content');
+        this.col_page = headerCols.findIndex(col => col.toLowerCase() === 'page');
+
+        // Default to 0 and 1 if not found
+        if (this.col_filename === -1) this.col_filename = 0;
+        if (this.col_content === -1) this.col_content = 1;
+
         const rows = csv.split('\n').slice(1); // skip header row
         const uniqueMap = new Map<string, IAddressInfo>();
 
@@ -92,10 +111,11 @@ export class AddressInfoComponent implements OnInit {
           .forEach(row => {
             const cols = this.splitCSV(row);
             const item: IAddressInfo = {
-              filename: cols[0].trim(),
-              content: cols[1].trim() //.replace(/\s([अ)ब)क)])\)/gi, '<br>$1)')
+              filename: cols[this.col_filename].trim(),
+              content: cols[this.col_content].trim(), //.replace(/\s([अ)ब)क)])\)/gi, '<br>$1)')
+              page: this.col_page !== -1 ? parseInt(cols[this.col_page].trim(), 10) : -1
             };
-            console.log(cols[1])
+            console.log(cols[this.col_content])
             // Unique key based on filename + content
             const key = `${item.filename}|${item.content}`;
             if (!uniqueMap.has(key)) {
@@ -134,36 +154,40 @@ export class AddressInfoComponent implements OnInit {
     this.searchTimeout = setTimeout(() => {
       this.applyFilter();
     }, 400); // 400ms delay
-}
+  }
 
   async applyFilter() {
-  if (!this.filterText || this.filterText.trim() === '') {
-    this.filteredData = this.data;
-    return;
+    if (!this.filterText || this.filterText.trim() === '') {
+      this.filteredData = this.data;
+      return;
+    }
+
+    try {
+      // Step 1: Translate input to Marathi
+      const translated = await this.translateToMarathi(this.filterText);
+
+      const mrINValue = translated.toLowerCase();
+      console.log('Original:', this.filterText);
+      console.log('Translated:', mrINValue);
+
+      // Step 2: Filter using translated text
+      this.filteredData = this.data.filter(item =>
+        item.filename.toLowerCase().includes(mrINValue) ||
+        item.content.toLowerCase().includes(mrINValue)
+      );
+
+    } catch (err) {
+      console.error('Filter error:', err);
+    }
   }
-
-  try {
-    // Step 1: Translate input to Marathi
-    const translated = await this.translateToMarathi(this.filterText);
-
-    const mrINValue = translated.toLowerCase();
-    console.log('Original:', this.filterText);
-    console.log('Translated:', mrINValue);
-
-    // Step 2: Filter using translated text
-    this.filteredData = this.data.filter(item =>
-      item.filename.toLowerCase().includes(mrINValue) ||
-      item.content.toLowerCase().includes(mrINValue)
-    );
-
-  } catch (err) {
-    console.error('Filter error:', err);
-  }
-}
 
   openFile(item: IAddressInfo) {
     // File is located inside the folder: <folderName>/<filename>
-    const url = `${this.folderName}/${item.filename}`;
-    window.open(url, '_blank');
+    let url = `${this.folderName}/${item.filename}`;
+    if (item.page && item.page > 0) {
+      url = `${this.folderName}/${item.filename}#page=${item.page}`;
+
+      window.open(url, '_blank');
+    }
   }
 }
