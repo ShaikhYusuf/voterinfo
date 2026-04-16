@@ -44,9 +44,9 @@ def translate_marathi_csv(input_csv, marathi_column, output_csv):
     print(f"Success! Translated addresses saved to '{output_csv}'.")
 
 # --- SETTINGS ---
-INPUT_FILE = 'updated.list_211.mar.csv'      # Your input file name
+INPUT_FILE = 'updated.chinchpokli.mar.csv'      # Your input file name
 MARATHI_COL = 'content'        # The name of the column containing Marathi addresses
-OUTPUT_FILE = 'updated.list_211.eng.csv'
+OUTPUT_FILE = 'updated.chinchpokli.eng.csv'
 
 # Run the function
 if __name__ == "__main__":
