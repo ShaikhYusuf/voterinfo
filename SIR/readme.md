@@ -26,3 +26,9 @@ CELL_PT = {"page":1,"x":15,"y":765,"width":560,"height":33}
 # 1. Use google-cloud-vision API (handles Devanagari excellently)
 # 2. OR use Azure Computer Vision OCR
 # 3. OR install the SakalMarathi-to-Unicode font converter and process the PDF text layer
+
+wget -O lang_data/mar.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/mar.traineddata
+
+curl -L -o lang_data/mar.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/mar.traineddata
+
+curl -L -o lang_data/eng.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata

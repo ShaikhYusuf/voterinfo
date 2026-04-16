@@ -6,75 +6,9 @@ from pdf2image import convert_from_path, pdfinfo_from_path
 import math
 import pytesseract
 
-def extract_info_from_page_old1(each_page, input_DPI, input_CELL_PT):
-    page_img = np.array(each_page)
-
-    # Convert PDF points → pixels
-    scale = input_DPI / 72.0
-    x = int(input_CELL_PT["x"] * scale)
-    y = int(input_CELL_PT["y"] * scale)
-    w = int(input_CELL_PT["width"] * scale)
-    h = int(input_CELL_PT["height"] * scale)
-
-    # PDF origin is TOP-left (as per your input)
-    crop = page_img[y:y+h, x:x+w]
-
-    # -------------------------------
-    # 2. Preprocess
-    # -------------------------------
-
-    # Grayscale
-    gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
-
-    # Adaptive threshold
-    th = cv2.adaptiveThreshold(
-        gray, 255,
-        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-        cv2.THRESH_BINARY_INV,
-        31, 15
-    )
-
-    _, th = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-    processed = cv2.bitwise_not(th)
-    
-    # -------------------------------
-    # 3. OCR (PaddleOCR)
-    # -------------------------------
-    custom_config = r'--oem 1 --psm 6'
-    text = pytesseract.image_to_string(
-        processed,
-        lang='eng+mar',   # Marathi not always available → hin works well
-        config=custom_config
-    )
-    # -------------------------------
-    # 4. Post-processing (Devanagari fixes)
-    # -------------------------------
-
-    def fix_matra(text):
-        # Fix common misplaced 'ि'
-        text = text.replace(" ि", "ि")
-        # Add more rules as needed
-        return text
-
-    def dictionary_correction(text, word_list):
-        corrected = []
-        for word in text.split():
-            if word in word_list:
-                corrected.append(word)
-            else:
-                # naive closest match
-                corrected.append(word)  # placeholder
-        return " ".join(corrected)
-
-    text = fix_matra(text)
-    # cv2.imshow("Cropped", crop)
-    # cv2.imshow("Processed", processed)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-    return text
+from x0_settings import BASE_FOLDER
 
 def extract_info_from_page(each_page, input_DPI, input_CELL_PT):
-    TARGET_TEXT = "यादी भाग क्र."
     MAX_RETRIES = 3
 
     page_img = np.array(each_page)
@@ -112,13 +46,20 @@ def extract_info_from_page(each_page, input_DPI, input_CELL_PT):
         _, th = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
         processed = cv2.bitwise_not(th)
 
+        # cv2.imshow("Processed", processed)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        # exit(0)
+        
         # -------------------------------
         # OCR with confidence
         # -------------------------------
-        custom_config = r'--oem 1 --psm 6'
+        os.environ["TESSDATA_PREFIX"] = os.path.abspath("lang_data")
+        tessdata_dir = os.path.abspath("lang_data")
+        custom_config = '--oem 1 --psm 6 '
         data = pytesseract.image_to_data(
             processed,
-            lang='eng+mar',
+            lang='mar',
             config=custom_config,
             output_type=pytesseract.Output.DICT
         )
@@ -136,11 +77,8 @@ def extract_info_from_page(each_page, input_DPI, input_CELL_PT):
                     confidences.append(conf)
 
         text = fix_matra(" ".join(words))
-        # cv2.imshow("Cropped", crop)
-        # cv2.imshow("Processed", processed)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-
+        
+        print (text)
         # average confidence
         avg_conf = int(sum(confidences) / len(confidences)) if confidences else 0
 
@@ -150,7 +88,7 @@ def extract_info_from_page(each_page, input_DPI, input_CELL_PT):
             best_text = text
 
         # early stop if good enough + contains target
-        if TARGET_TEXT in text and avg_conf > 80:
+        if avg_conf > 95:
             break
 
     return best_text, best_conf
@@ -160,17 +98,17 @@ def extract_info_from_page(each_page, input_DPI, input_CELL_PT):
 # -------------------------------
 if __name__ == "__main__":
 
-    INPUT_FOLDER = "list_211"   # <-- pass your folder here
-    OUTPUT_CSV = "yaadi_output.csv"
+    INPUT_FOLDER = BASE_FOLDER   # <-- pass your folder here
+    OUTPUT_CSV = f"{BASE_FOLDER}.mar.csv"
 
     DPI = 400
-    CELL_PT = {
-        "x": 5,
-        "y": 55,
-        "width": 560,
-        "height": 15,
-    }
-
+    #
+    CELL_ON_FIRST_PAGE = {"page":1,"x":105,"y":250,"width":295,"height":123}
+    CELL_PT_ON_ALL_PAGE = {"page":1,"x":69,"y":95,"width":490,"height":27}
+    
+    CELL_PT = CELL_PT_ON_ALL_PAGE
+    start_page = 2
+    
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["filename", "page", "content", "confidence"])
@@ -187,8 +125,7 @@ if __name__ == "__main__":
             last_input = ""
 
             # iterate all pages of the pdf
-            for page_num in range(2, total_pages + 1):
-
+            for page_num in range(start_page, total_pages):
                 pages = convert_from_path(
                     pdf_path,
                     dpi=DPI,
@@ -206,5 +143,5 @@ if __name__ == "__main__":
                 last_input = text
                 print(f"Page {page_num}: {text}")
                 writer.writerow([file, page_num, text, confidence])
-
+                
     print("\n✅ CSV saved to:", OUTPUT_CSV)
